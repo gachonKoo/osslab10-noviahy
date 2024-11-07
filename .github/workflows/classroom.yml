@@ -20,12 +20,12 @@ jobs:
         with:
           test-name: test0
           setup-command: ''
-          command: python solution.py 100  
+          command: python solution.py 100
           input: ''
           expected-output: 1 2 4 5 10 20 25 50 100
           comparison-method: contains
           timeout: 10
-
+          
       - name: test1
         id: test1
         uses: classroom-resources/autograding-io-grader@v1
@@ -38,10 +38,16 @@ jobs:
           comparison-method: contains
           timeout: 10
 
+    
+      - name: Set outputs for Autograding Reporter
+        run: |
+          echo "::set-output name=TEST0_RESULTS::${{ steps.test0.outputs.result }}"
+          echo "::set-output name=TEST1_RESULTS::${{ steps.test1.outputs.result }}"
+
       - name: Autograding Reporter
         uses: classroom-resources/autograding-grading-reporter@v1
-        env:
-          TEST0_RESULTS: "${{steps.test0.outputs.result}}"
-          TEST1_RESULTS: "${{steps.test1.outputs.result}}"
         with:
           runners: test0,test1
+        env:
+          TEST0_RESULTS: "${{ steps.set_outputs.outputs.TEST0_RESULTS }}"
+          TEST1_RESULTS: "${{ steps.set_outputs.outputs.TEST1_RESULTS }}"
