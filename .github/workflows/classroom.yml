@@ -1,7 +1,7 @@
 name: Autograding Tests
-on:
-  - push
-  - repository_dispatch
+'on':
+- push
+- repository_dispatch
 permissions:
   checks: write
   actions: read
@@ -11,42 +11,34 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor != 'github-classroom[bot]'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: test0
-        id: test0
-        uses: classroom-resources/autograding-io-grader@v1
-        with:
-          test-name: test0
-          setup-command: ''
-          command: python solution.py 100
-          input: ''
-          expected-output: 1 2 4 5 10 20 25 50 100
-          comparison-method: contains
-          timeout: 10
-
-      - name: test1
-        id: test1
-        uses: classroom-resources/autograding-io-grader@v1
-        with:
-          test-name: test1
-          setup-command: ''
-          command: python solution.py 23
-          input: ''
-          expected-output: 1 23
-          comparison-method: contains
-          timeout: 10
-
-      - name: Set outputs for Autograding Reporter
-        run: |
-          echo "TEST0_RESULTS=${{ steps.test0.outputs.result }}" >> $GITHUB_ENV
-          echo "TEST1_RESULTS=${{ steps.test1.outputs.result }}" >> $GITHUB_ENV
-
-      - name: Autograding Reporter
-        uses: classroom-resources/autograding-grading-reporter@v1
-        with:
-          runners: test0,test1
-        env:
-          TEST0_RESULTS: "${{ env.TEST0_RESULTS }}"
-          TEST1_RESULTS: "${{ env.TEST1_RESULTS }}"
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: test0
+      id: test0
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: test0
+        setup-command: ''
+        command: python divisors.py 100
+        input: ''
+        expected-output: 1 2 4 5 10 20 25 50 100
+        comparison-method: contains
+        timeout: 10
+    - name: test1
+      id: test1
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: test1
+        setup-command: ''
+        command: python divisors.py 23
+        input: ''
+        expected-output: 1 23
+        comparison-method: contains
+        timeout: 10
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TEST0_RESULTS: "${{steps.test0.outputs.result}}"
+        TEST1_RESULTS: "${{steps.test1.outputs.result}}"
+      with:
+        runners: test0,test1
